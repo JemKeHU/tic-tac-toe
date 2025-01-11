@@ -23,14 +23,12 @@ player1, player2, and currentPlayer are private and cannot be accessed directly 
 Only startGame and playTurn are exposed for public use.
 2. Private Variables
 javascript
-Копировать код
 let player1, player2;
 let currentPlayer;
 player1 and player2: Store the two players in the game. Each is created using the Player factory (not shown in the code, but assumed to exist).
 currentPlayer: Keeps track of whose turn it is (either player1 or player2).
 3. startGame Function
 javascript
-Копировать код
 const startGame = (name1, marker1, name2, marker2) => {
     player1 = Player(name1, marker1);
     player2 = Player(name2, marker2);
@@ -47,7 +45,6 @@ Sets currentPlayer to player1 to start the game.
 Logs a message indicating that it’s Player 1’s turn.
 4. switchTurn Function
 javascript
-Копировать код
 const switchTurn = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
     console.log(`${currentPlayer.name}'s turn!`);
@@ -60,7 +57,6 @@ Otherwise, switch to player1.
 Logs whose turn it is.
 5. playTurn Function
 javascript
-Копировать код
 const playTurn = (index) => {
     Gameboard.placeMarker(index, currentPlayer.marker);
     if (checkWinner()) {
@@ -79,7 +75,6 @@ If the current player has won, it logs the winner and stops further execution (r
 If no one wins, it calls switchTurn() to alternate to the next player.
 6. checkWinner Function
 javascript
-Копировать код
 const checkWinner = () => {
     const board = Gameboard.getBoard();
     const winPatterns = [
@@ -105,7 +100,6 @@ For each pattern, .every() ensures all indices in the pattern contain the curren
 Returns true if there’s a winner; otherwise, false.
 7. Public API
 javascript
-Копировать код
 return { startGame, playTurn };
 Purpose: Exposes the startGame and playTurn functions, making them available for use outside the module.
 Usage:
@@ -115,7 +109,6 @@ Example of How It Works
 Here’s how this module might interact with the Player and Gameboard modules in a complete game:
 
 javascript
-Копировать код
 // Example: Player and Gameboard factories (assumed to exist)
 const Player = (name, marker) => ({ name, marker });
 const Gameboard = (() => {
