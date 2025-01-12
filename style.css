@@ -1,0 +1,16 @@
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    grid-gap: 20px;
+    width: 640px;
+    height: 640px;
+}
+
+.game-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    
+}

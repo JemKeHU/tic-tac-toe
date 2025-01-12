@@ -124,4 +124,32 @@ const launchGame = () => {
     console.log("Game over! Refresh the page to play again.");
 };
 
-launchGame();
+// launchGame();
+
+// New code
+
+const gameInterface = document.querySelector("#game-board");
+
+const createGrid = () => {
+    for (let i = 0; i < 9; i++) {
+        const innerButton = document.createElement("button");
+        innerButton.setAttribute("class", "game-button");
+        innerButton.textContent = " ";
+
+        gameInterface.appendChild(innerButton);
+    }
+};
+
+createGrid();
+
+const changeMarker = () => {
+    const buttons = document.querySelectorAll(".game-button");
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", () => {
+            buttons[i].textContent = buttons[i].textContent === "X" ? "O" : "X";
+        });
+    }
+};
+
+document.addEventListener("DOMContentLoaded", changeMarker);
