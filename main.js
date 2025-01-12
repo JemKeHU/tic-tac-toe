@@ -133,4 +133,21 @@ const setupEventListeners = () => {
     });
 };
 
+const resetButton = document.querySelector(".reset-button");
+
+const resetGame = () => {
+    GameBoard.reset();
+    const buttons = document.querySelectorAll(".game-button");
+
+    buttons.forEach((button) => {
+        button.textContent = "";
+        button.disabled = false;
+    });
+
+    GameController.startGame("Player1", "X", "Player2", "O");
+    alert("Game has been reset!");
+};
+
+resetButton.addEventListener("click", resetGame);
+
 document.addEventListener("DOMContentLoaded", startUI);
