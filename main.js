@@ -22,17 +22,7 @@ const GameBoard = (() => {
 
     const getBoard = () => [...gameBoard]; // Added this to get the board state
 
-    const displayBoard = () => {
-        console.log(`
-        ${gameBoard[0] || " "} | ${gameBoard[1] || " "} | ${gameBoard[2] || " "}
-        ---------
-        ${gameBoard[3] || " "} | ${gameBoard[4] || " "} | ${gameBoard[5] || " "}
-        ---------
-        ${gameBoard[6] || " "} | ${gameBoard[7] || " "} | ${gameBoard[8] || " "}
-        `);
-    };
-
-    return { placeMarker, reset, displayBoard, getBoard }; // Expose getBoard here
+    return { placeMarker, reset, getBoard }; // Expose getBoard here
 })();
 
 const GameController = (() => {
@@ -43,31 +33,29 @@ const GameController = (() => {
         player1 = Player(name1, marker1);
         player2 = Player(name2, marker2);
         currentPlayer = player1;
-        console.log(`It's ${currentPlayer.name}'s turn`);
+        alert(`It's ${currentPlayer.name}'s turn`);
     };
 
     const switchTurn = () => {
         currentPlayer = currentPlayer === player1 ? player2 : player1;
-        console.log(`It's ${currentPlayer.name}'s turn`);
+        alert(`It's ${currentPlayer.name}'s turn`);
     };
 
     const playTurn = (index) => {
         const isValidMove = GameBoard.placeMarker(index, currentPlayer.marker);
 
         if (!isValidMove) {
-            console.log("Invalid move! Try again.");
+            alert("Invalid move! Try again.");
             return false; // Game continues
         }
 
-        GameBoard.displayBoard();
-
         if (checkWinner()) {
-            console.log(`${currentPlayer.name} wins!`);
+            alert(`${currentPlayer.name} wins!`);
             return true; // Game over
         }
 
         if (isBoardFull()) {
-            console.log("It's a draw!");
+            alert("It's a draw!");
             return true; // Game over
         }
 
@@ -99,33 +87,6 @@ const GameController = (() => {
     return { startGame, playTurn, currentPlayer: () => currentPlayer }; // Expose currentPlayer as a getter
 })();
 
-const launchGame = () => {
-    const name1 = prompt("Enter player 1's name:");
-    const marker1 = prompt("Enter player 1's marker 'O' or 'X':");
-    const name2 = prompt("Enter player 2's name:");
-    const marker2 = prompt("Enter player 2's marker 'O' or 'X':");
-
-    GameController.startGame(name1, marker1, name2, marker2);
-
-    let gameOver = false;
-    while (!gameOver) {
-        const index = parseInt(
-            prompt(`${GameController.currentPlayer().name}, enter a position (0-8):`),
-            10
-        );
-        if (isNaN(index) || index < 0 || index > 8) {
-            console.log("Invalid input! Enter between 0 and 8.");
-            continue;
-        }
-
-        gameOver = GameController.playTurn(index);
-    }
-
-    console.log("Game over! Refresh the page to play again.");
-};
-
-// launchGame();
-
 // New code
 
 const gameInterface = document.querySelector("#game-board");
@@ -134,22 +95,42 @@ const createGrid = () => {
     for (let i = 0; i < 9; i++) {
         const innerButton = document.createElement("button");
         innerButton.setAttribute("class", "game-button");
-        innerButton.textContent = " ";
-
+        innerButton.setAttribute("data-index", i);
+        innerButton.textContent = "";
         gameInterface.appendChild(innerButton);
     }
 };
 
-createGrid();
+const startUI = () => {
+    const name1 = prompt("Enter player 1's name:");
+    const marker1 = prompt("Choose player 1's marker (X or O):");
+    const name2 = prompt("Enter player 2's name:");
+    const marker2 = marker1 === "X" ? "O" : "X";
 
-const changeMarker = () => {
-    const buttons = document.querySelectorAll(".game-button");
-
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", () => {
-            buttons[i].textContent = buttons[i].textContent === "X" ? "O" : "X";
-        });
-    }
+    GameController.startGame(name1, marker1, name2, marker2);
+    createGrid();
+    setupEventListeners();
 };
 
-document.addEventListener("DOMContentLoaded", changeMarker);
+const setupEventListeners = () => {
+    const buttons = document.querySelectorAll(".game-button");
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const index = parseInt(button.getAttribute("data-index"), 10);
+
+            const gameOver = GameController.playTurn(index);
+            const board = GameBoard.getBoard();
+            button.textContent = board[index];
+
+            button.disabled = true;
+
+            if (gameOver) {
+                buttons.forEach((btn) => (btn.disabled = true));
+                alert("Game over! Refresh to play again.");
+            }
+        });
+    });
+};
+
+document.addEventListener("DOMContentLoaded", startUI);
